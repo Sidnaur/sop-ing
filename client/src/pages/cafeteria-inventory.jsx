@@ -1,8 +1,25 @@
-import { CircleAlert, CircleCheck, CircleX, Clock, Filter, LayoutGrid, Search } from "lucide-react";
+import {
+  CircleAlert,
+  CircleCheck,
+  CircleX,
+  Clock,
+  Filter,
+  LayoutGrid,
+  Plus,
+  Search,
+  ChevronRight,
+} from "lucide-react";
 import SharedSidebar from "../components/shared-sidebar";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { useState } from "react";
+import FoodCard from "../components/food-card";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem
+} from "../components/ui/dropdown-menu";
 
 export default function CafeteriaInventory() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,54 +49,137 @@ export default function CafeteriaInventory() {
       numberOfItems: 32,
       icon: <CircleX size={24} color="#EF4444" />, // red
     },
-  ]
+  ];
 
   const inventoryItems = [
     {
-      name: "Chicken Adobo", 
-      description: "A popular Filipino dish consisting of chicken braised in a savory and tangy sauce.", 
-      price: "₱50 PHP", availability, items, photoURL
-    }
-  ]
+      id: 1,
+      name: "Chicken Adobo",
+      description:
+        "A popular Filipino dish consisting of chicken braised in a savory and tangy sauce.",
+      price: "50 PHP",
+      availability: true,
+      amountOfStock: 15,
+      photoURL:
+        "https://images.pexels.com/photos/6525933/pexels-photo-6525933.jpeg",
+    },
+    {
+      id: 2,
+      name: "Pancit Canton",
+      description:
+        "Stir-fried noodles with vegetables, meat, and savory sauce.",
+      price: "40 PHP",
+      availability: true,
+      amountOfStock: 10,
+      photoURL:
+        "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    },
+    {
+      id: 3,
+      name: "Lumpiang Shanghai",
+      description:
+        "Crispy spring rolls filled with ground pork and vegetables.",
+      price: "30 PHP",
+      availability: true,
+      amountOfStock: 20,
+      photoURL:
+        "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    },
+    {
+      id: 4,
+      name: "Sinigang na Baboy",
+      description:
+        "Pork soup with sour tamarind broth and assorted vegetables.",
+      price: "60 PHP",
+      availability: false,
+      amountOfStock: 0,
+      photoURL:
+        "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    },
+    {
+      id: 5,
+      name: "Tocino",
+      description: "Sweet cured pork served with garlic rice and egg.",
+      price: "45 PHP",
+      availability: true,
+      amountOfStock: 4,
+      photoURL:
+        "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    },
+    {
+      id: 6,
+      name: "Bicol Express",
+      description: "Spicy pork stew cooked in coconut milk and chili peppers.",
+      price: "55 PHP",
+      availability: true,
+      amountOfStock: 12,
+      photoURL:
+        "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
+    },
+  ];
 
   return (
     <SharedSidebar>
-      <><div className="bg-white border-b px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-[#6A972E] rounded-lg flex items-center justify-center text-white font-bold text-lg">
-              F
+      <>
+        <div className="bg-white border-b px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-[#6A972E] rounded-lg flex items-center justify-center text-white font-bold text-lg">
+                F
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900">FASPeCC</h1>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">FASPeCC</h1>
-          </div>
 
-          {/* Search Bar */}
-          <div className="flex-1 max-w-md mx-8">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-10 rounded-full"
-                data-testid="search-orders-input"
-              />
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                data-testid="filter-button"
-              >
-                <Filter className="h-4 w-4" />
-              </Button>
+            {/* Search Bar */}
+            <div className="flex-1 max-w-md mx-8">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                <Input
+                  placeholder="Search"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-10 pr-10 rounded-full"
+                  data-testid="search-orders-input"
+                />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
+                  data-testid="filter-button"
+                >
+                  <Filter className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-        <div className="p-6">
-          <div className="bg-[#6A972E] text-white p-6 rounded-lg mb-6">
-            <h2 className="text-2xl font-bold">Cafeteria Inventory</h2>
-            <p className="text-green-100 mt-1">Manage your menu items, stock, and availability</p>
+        <div className="p-6 flex flex-col gap-8">
+          <div className="bg-[#6A972E] text-white p-6 rounded-lg flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold">Cafeteria Inventory</h2>
+              <p className="text-green-100 mt-1">
+                Manage your menu items, stock, and availability
+              </p>
+            </div>
+            <Button>
+              <Plus size={24} /> Add New Item
+            </Button>
+          </div>
+          <div className="flex gap-4">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="w-48 justify-between">
+                  Sort By
+                  <ChevronRight className="ml-2 h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuItem>All Items</DropdownMenuItem>
+                <DropdownMenuItem>Available</DropdownMenuItem>
+                <DropdownMenuItem>Low Stock</DropdownMenuItem>
+                <DropdownMenuItem>Sold Out</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {inventoryData.map((item, index) => (
@@ -87,20 +187,32 @@ export default function CafeteriaInventory() {
                 <div className="flex items-center justify-between p-3">
                   <div className="flex flex-col gap-1">
                     <h3 className="text-gray-600 text-sm">{item.name}</h3>
-                    <p className="text-2xl font-semibold">{item.numberOfItems} items</p>
+                    <p className="text-2xl font-semibold">
+                      {item.numberOfItems} items
+                    </p>
                   </div>
-                  <div className="bg-gray-100 p-3 rounded-full"> <div className="text-gray-600">
-                    {item.icon}
-                  </div></div>
-
+                  <div className="bg-gray-100 p-3 rounded-full">
+                    <div className="text-gray-600">{item.icon}</div>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-
+          <div className="grid grid-cols-3 gap-8">
+            {inventoryItems.map((food, idx) => (
+              <FoodCard
+                key={idx}
+                name={food.name}
+                description={food.description}
+                price={food.price}
+                availability={food.availability}
+                amountOfStock={food.amountOfStock}
+                photoURL={food.photoURL}
+              />
+            ))}
+          </div>
         </div>
       </>
-
     </SharedSidebar>
-  )
+  );
 }
