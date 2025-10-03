@@ -1,39 +1,61 @@
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Edit } from "lucide-react";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
+
+// FoodCardProps interface removed because this is a JavaScript file.
 
 export default function FoodCard({
-  id,
   name,
   description,
   price,
   availability,
   amountOfStock,
   photoURL,
+  onEdit,
 }) {
+  const getStockStatus = () => {
+    if (amountOfStock === 0) return { label: "Sold Out", color: "bg-red-100 text-red-700" };
+    if (amountOfStock <= 5) return { label: "Low Stock", color: "bg-yellow-100 text-yellow-700" };
+    return { label: "Available", color: "bg-green-100 text-green-700" };
+  };
+
+  const status = getStockStatus();
+
   return (
-    <div className="rounded overflow-hidden shadow-lg bg-white">
-      <img className="w-full h-48 object-cover" src={photoURL} alt={name} />
-      <div className="p-6">
-        <div className="gap-4 flex justify-between mb-3">
-          {availability ? (
-            amountOfStock > 5 ? (
-              <Badge className="bg-green-500">Available</Badge>
-            ) : (
-              <Badge className="bg-yellow-500">Low Stock</Badge>
-            )
-          ) : (
-            <Badge className="bg-red-500">Not Available</Badge>
-          )}
-          <Badge>Items in Stock: {amountOfStock}</Badge>
+    <Card className="overflow-hidden hover:shadow-lg transition-shadow">
+      <div className="relative">
+        <img 
+          src={photoURL} 
+          alt={name}
+          className="w-full h-48 object-cover"
+        />
+        <div className="absolute top-2 right-2">
+          <Badge className={status.color}>
+            {status.label}
+          </Badge>
         </div>
-        <div className="font-bold text-xl mb-2">{name}</div>
-        <p className="text-gray-700 text-base mb-2">{description}</p>
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-green-600 font-semibold">₱{price}</span>
-        </div>
-        <Button className="w-full mt-4"><Edit size={24}/> Edit Item</Button>
       </div>
-    </div>
+      
+      <CardContent className="p-4 space-y-2">
+        <h3 className="font-semibold text-lg">{name}</h3>
+        <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
+        <div className="flex items-center justify-between">
+          <span className="text-xl font-bold text-[#6A972E]">P{price}</span>
+          <span className="text-sm text-gray-500">Stock: {amountOfStock}</span>
+        </div>
+      </CardContent>
+      
+      <CardFooter className="p-4 pt-0">
+        <Button 
+          variant="outline" 
+          className="w-full"
+          onClick={onEdit}
+        >
+          <Edit className="h-4 w-4 mr-2" />
+          Edit Item
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }

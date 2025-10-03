@@ -14,6 +14,8 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { useState } from "react";
 import FoodCard from "../components/food-card";
+import EditItemModal from "../components/edit-item"; 
+
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -21,37 +23,11 @@ import {
   DropdownMenuItem
 } from "../components/ui/dropdown-menu";
 
-export default function CafeteriaInventory() {
+function CafeteriaInventory() {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-
-  const inventoryData = [
-    {
-      name: "Total Items",
-      numberOfItems: 15,
-      icon: <LayoutGrid size={24} color="#6A972E" />, // green
-    },
-    {
-      name: "Available",
-      numberOfItems: 25,
-      icon: <CircleCheck size={24} color="#22C55E" />, // green
-    },
-    {
-      name: "Low Stock",
-      numberOfItems: 28,
-      icon: <CircleAlert size={24} color="#FACC15" />, // yellow
-    },
-    {
-      name: "Sold Out",
-      numberOfItems: 32,
-      icon: <CircleX size={24} color="#EF4444" />, // red
-    },
-  ];
-
-  const inventoryItems = [
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
+  const [inventoryItems, setInventoryItems] = useState([
     {
       id: 1,
       name: "Chicken Adobo",
@@ -116,52 +92,70 @@ export default function CafeteriaInventory() {
       photoURL:
         "https://images.pexels.com/photos/461382/pexels-photo-461382.jpeg",
     },
+  ]);
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const inventoryData = [
+    {
+      name: "Total Items",
+      numberOfItems: 15,
+      icon: <LayoutGrid size={24} color="#6A972E" />, // green
+    },
+    {
+      name: "Available",
+      numberOfItems: 25,
+      icon: <CircleCheck size={24} color="#22C55E" />, // green
+    },
+    {
+      name: "Low Stock",
+      numberOfItems: 28,
+      icon: <CircleAlert size={24} color="#FACC15" />, // yellow
+    },
+    {
+      name: "Sold Out",
+      numberOfItems: 32,
+      icon: <CircleX size={24} color="#EF4444" />, // red
+    },
   ];
 
   return (
     <SharedSidebar>
       <>
-        <div className="bg-white border-b px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 bg-[#6A972E] rounded-lg flex items-center justify-center text-white font-bold text-lg">
-                F
+        {/* Header Bar - uniform with Customer Feedback */}
+        <div className="flex flex-col gap-0 px-12 pt-8 bg-white border-b">
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-[#9CAF88] rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-2xl">F</span>
               </div>
-              <h1 className="text-2xl font-bold text-gray-900">FASPeCC</h1>
+              <span className="text-[2rem] font-bold text-[#6A972E] tracking-tight">FASPeCC</span>
             </div>
-
-            {/* Search Bar */}
-            <div className="flex-1 max-w-md mx-8">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-10 pr-10 rounded-full"
-                  data-testid="search-orders-input"
-                />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0"
-                  data-testid="filter-button"
-                >
-                  <Filter className="h-4 w-4" />
-                </Button>
-              </div>
+            <div className="relative w-[340px]">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[#6A972E]" />
+              <input
+                type="search"
+                placeholder="Search"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-12 pr-12 py-2 w-full border border-[#6A972E] rounded-full focus:outline-none bg-white text-gray-900"
+                style={{ fontSize: '1rem' }}
+              />
+              <button className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6A972E]">
+                <svg width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M4 21v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </button>
             </div>
           </div>
         </div>
         <div className="p-6 flex flex-col gap-8">
-          <div className="bg-[#6A972E] text-white p-6 rounded-lg flex justify-between items-center">
+          <div className="bg-[#6B8E23] text-white px-8 py-6 rounded-lg flex items-center justify-between shadow mt-6 mb-2">
             <div>
-              <h2 className="text-2xl font-bold">Cafeteria Inventory</h2>
-              <p className="text-green-100 mt-1">
-                Manage your menu items, stock, and availability
-              </p>
+              <h2 className="text-3xl font-bold">Inventory Management</h2>
+              <p className="text-lg mt-2">Track stock levels, update product quantities, and manage suppliers.</p>
             </div>
-            <Button>
+            <Button className="bg-[#9CAF88] text-black px-6 py-3 rounded-lg text-lg font-semibold flex items-center gap-2 hover:bg-[#8CA86E]">
               <Plus size={24} /> Add New Item
             </Button>
           </div>
@@ -198,6 +192,7 @@ export default function CafeteriaInventory() {
               </div>
             ))}
           </div>
+          {/* Edit Item Modal State */}
           <div className="grid grid-cols-3 gap-8">
             {inventoryItems.map((food, idx) => (
               <FoodCard
@@ -208,11 +203,36 @@ export default function CafeteriaInventory() {
                 availability={food.availability}
                 amountOfStock={food.amountOfStock}
                 photoURL={food.photoURL}
+                onEdit={() => {
+                  setEditingItem(food);
+                  setIsModalOpen(true);
+                }}
               />
             ))}
           </div>
+
+          {/* Edit Item Modal */}
+          <EditItemModal
+            isOpen={isModalOpen}
+            onClose={() => {
+              setIsModalOpen(false);
+              setEditingItem(null);
+            }}
+            onSave={(updatedItem) => {
+              setInventoryItems((items) =>
+                items.map((item) =>
+                  item.id === editingItem.id ? { ...item, ...updatedItem } : item
+                )
+              );
+              setIsModalOpen(false);
+              setEditingItem(null);
+            }}
+            item={editingItem}
+          />
         </div>
       </>
     </SharedSidebar>
   );
 }
+
+export default CafeteriaInventory;

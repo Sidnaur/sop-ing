@@ -10,6 +10,8 @@ import AuthPage from "./pages/auth-page";
 import OrderManagementPage from "./pages/order-management";
 import { ProtectedRoute } from "./lib/protected-route";
 import CafeteriaInventory from "./pages/cafeteria-inventory";
+import CustomerFeedback from "./pages/customer-feedback";
+import SettingsPage from "./pages/settings";
 
 function Router() {
   return (
@@ -18,6 +20,8 @@ function Router() {
       <ProtectedRoute path="/dashboard" component={HomePage} />
       <ProtectedRoute path="/orders" component={OrderManagementPage} />
       <ProtectedRoute path="/inventory" component={CafeteriaInventory} />
+      <ProtectedRoute path="/feedback" component={CustomerFeedback} /> 
+      <ProtectedRoute path="/settings" component={SettingsPage} />
       <Route component={NotFound} />
     </Switch>
   );
