@@ -1,4 +1,3 @@
-// components/edit-item.jsx
 import {
   Dialog,
   DialogContent,
@@ -20,22 +19,9 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 
-const categories = [
-  "Main Course",
-  "Appetizer",
-  "Dessert",
-  "Beverage",
-  "Side Dish",
-  "Snack",
-  "Salad",
-  "Soup",
-  "Breakfast",
-  "Special",
-];
-
 const status = ["Available", "Unavailable"];
 
-function EditItemModal({ isOpen, onClose, onSave, item }) {
+function EditItemModal({ isOpen, onClose, onSave, item, onDelete, categories }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -43,7 +29,7 @@ function EditItemModal({ isOpen, onClose, onSave, item }) {
     photoURL: "",
     availability: true,
     amountOfStock: 0,
-    category: categories[0],
+    category: (Array.isArray(categories) && categories.length > 1) ? categories[1] : "",
   });
 
   useEffect(() => {
@@ -55,7 +41,7 @@ function EditItemModal({ isOpen, onClose, onSave, item }) {
         photoURL: item.photoURL || "",
         availability: item.availability ?? true,
         amountOfStock: item.amountOfStock || 0,
-        category: item.category || categories[0],
+        category: item.category || ((Array.isArray(categories) && categories.length > 1) ? categories[1] : ""),
       });
     } else {
       setFormData({
@@ -65,11 +51,11 @@ function EditItemModal({ isOpen, onClose, onSave, item }) {
         photoURL: "",
         availability: true,
         amountOfStock: 0,
-        category: categories[0],
+        category: (Array.isArray(categories) && categories.length > 1) ? categories[1] : "",
       });
     }
-  }, [item, isOpen]);
-  // debug helper: logs when modal is open
+  }, [item, isOpen, categories]);
+
   useEffect(() => {
     if (isOpen) {
       console.log("🟢 EditItemModal opened for item:", item?.name ?? "(new)");
@@ -93,24 +79,45 @@ function EditItemModal({ isOpen, onClose, onSave, item }) {
 
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="photoURL">Item Image URL</Label>
-              <div className="flex gap-4">
+              <Label htmlFor="photoURL">Item Image</Label>
+              <div className="flex gap-4 items-center">
                 {formData.photoURL && (
-                  <img
-                    src={formData.photoURL}
-                    alt="Preview"
-                    className="w-24 h-24 rounded-lg object-cover"
-                  />
+                  <div className="relative">
+                    <img
+                      src={formData.photoURL}
+                      alt="Preview"
+                      className="w-24 h-24 rounded-lg object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, photoURL: "" })}
+                      className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
                 )}
-                <Input
-                  id="photoURL"
-                  placeholder="https://example.com/image.jpg"
-                  value={formData.photoURL}
-                  onChange={(e) =>
-                    setFormData({ ...formData, photoURL: e.target.value })
-                  }
-                  className="flex-1"
-                />
+                <div className="flex-1">
+                  <Input
+                    id="photoURL"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setFormData({ ...formData, photoURL: reader.result });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                    className="cursor-pointer"
+                  />
+                  <p className="text-sm text-gray-500 mt-1">
+                      Choose an image file to upload
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -131,7 +138,7 @@ function EditItemModal({ isOpen, onClose, onSave, item }) {
                 <Label htmlFor="price">Price</Label>
                 <Input
                   id="price"
-                  placeholder="50 PHP"
+                  placeholder="₱0.00"
                   value={formData.price}
                   onChange={(e) =>
                     setFormData({ ...formData, price: e.target.value })
@@ -160,11 +167,12 @@ function EditItemModal({ isOpen, onClose, onSave, item }) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" className="justify-start">
                     <ChevronsUpDown />
-                    {formData.category}
+                    {formData.category || "Select a category"}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
-                  {categories.map((cat) => (
+                  {/* Corrected line with conditional rendering */}
+                  {Array.isArray(categories) && categories.filter(cat => cat !== "All Categories").map((cat) => (
                     <DropdownMenuItem
                       key={cat}
                       onClick={() =>
@@ -223,7 +231,15 @@ function EditItemModal({ isOpen, onClose, onSave, item }) {
           </div>
 
           <div className="flex justify-between pt-6 gap-2">
-            <Button variant="outline" className="bg-red-400">
+            <Button
+              variant="outline"
+              className="bg-red-400 text-white"
+              onClick={() => {
+                if (item && item.id) {
+                  onDelete(item.id);
+                }
+              }}
+            >
               Delete Item
             </Button>
             <div className="flex gap-2">
@@ -246,6 +262,8 @@ EditItemModal.propTypes = {
   onClose: PropTypes.func.isRequired,
   onSave: PropTypes.func.isRequired,
   item: PropTypes.object,
+  onDelete: PropTypes.func.isRequired,
+  categories: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default EditItemModal;

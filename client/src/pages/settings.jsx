@@ -45,16 +45,17 @@ function HourInputRow({ day, times, handleHourChange }) {
   else if (duration !== "Set Times") badgeClass = "bg-[#E6F4D2] text-[#6A972E] font-bold";
 
   return (
-    <div className="grid grid-cols-4 items-center gap-4 py-3 border-b last:border-b-0">
+    // Adjusted grid layout for better alignment
+    <div className="grid grid-cols-[1fr,1.5fr,1.5fr,1fr] items-center gap-4 py-3 border-b last:border-b-0 px-4 sm:px-6">
       {/* Day + Closed Switch */}
       <div className="flex items-center gap-2">
         <span className="font-semibold text-gray-800">{day}</span>
         <Switch
-          checked={isClosed}
-          onCheckedChange={() =>
-            handleHourChange(day, "status", isClosed ? "Open" : "Closed")
+          checked={!isClosed} // Note the logical inversion for the visual state
+          onCheckedChange={(checked) =>
+            handleHourChange(day, "status", checked ? "Open" : "Closed")
           }
-          className="data-[state=checked]:bg-red-500"
+          className="data-[state=checked]:bg-[#6A972E] data-[state=unchecked]:bg-red-500"
         />
       </div>
 
@@ -84,10 +85,10 @@ function HourInputRow({ day, times, handleHourChange }) {
   );
 }
 
+// ... (The rest of your SettingsPage component remains the same)
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("hours");
 
-  // Hours
   const [hours, setHours] = useState({
     Monday: { open: "08:00", close: "17:00", status: "Open" },
     Tuesday: { open: "08:00", close: "17:00", status: "Open" },
@@ -98,7 +99,6 @@ export default function SettingsPage() {
     Sunday: { open: "00:00", close: "00:00", status: "Closed" },
   });
 
-  // Staff
   const [staff, setStaff] = useState([
     { id: 1, name: "Anna Ciriaco", role: "Cashier", email: "anna.c@gmail.com", status: "Active" },
     { id: 2, name: "Jennifer Carlos", role: "Cook", email: "jennifer.c@gmail.com", status: "Active" },
@@ -107,7 +107,6 @@ export default function SettingsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newStaff, setNewStaff] = useState({ name: "", role: "", email: "", status: "Active" });
 
-  // Notifications
   const [notifications, setNotifications] = useState({
     newOrders: true,
     lowStockAlerts: true,
@@ -115,7 +114,6 @@ export default function SettingsPage() {
     systemMaintenance: false,
   });
 
-  // Handlers
   const handleHourChange = (day, type, value) => {
     setHours((prev) => ({ ...prev, [day]: { ...prev[day], [type]: value } }));
   };
@@ -147,16 +145,13 @@ export default function SettingsPage() {
   return (
     <SharedSidebar>
       <div className="min-h-screen bg-gray-50">
-        {/* Header */}
         <div className="bg-white border-b px-6 py-4">
           <h1 className="text-xl font-bold text-gray-900">Settings</h1>
           <p className="text-sm text-gray-500">Welcome back, Staff Name</p>
         </div>
 
-        {/* Content */}
         <div className="p-6">
           <div className="bg-white rounded-lg shadow-xl">
-            {/* Tabs */}
             <div className="border-b px-6 flex gap-6">
               {tabs.map(({ id, label, icon: Icon }) => (
                 <button
@@ -173,9 +168,7 @@ export default function SettingsPage() {
               ))}
             </div>
 
-            {/* Tab Content */}
             <div className="p-6">
-              {/* Hours */}
               {activeTab === "hours" && (
                 <div>
                   <h2 className="text-xl font-semibold mb-4">Store Operating Hours</h2>
@@ -192,7 +185,6 @@ export default function SettingsPage() {
                 </div>
               )}
 
-              {/* Staff */}
               {activeTab === "staff" && (
                 <div>
                   <div className="flex justify-between items-center mb-6">
@@ -240,7 +232,6 @@ export default function SettingsPage() {
                     </table>
                   </div>
 
-                                   {/* Add Staff Modal */}
                   {isAddModalOpen && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
@@ -285,7 +276,6 @@ export default function SettingsPage() {
                 </div>
               )}
 
-              {/* Notifications */}
               {activeTab === "notifications" && (
                 <div className="space-y-4">
                   <h2 className="text-xl font-semibold">Notification Settings</h2>
@@ -302,7 +292,6 @@ export default function SettingsPage() {
                 </div>
               )}
 
-              {/* Save */}
               <div className="mt-8 pt-4 border-t flex justify-end">
                 <Button onClick={handleSaveChanges} className="bg-[#6A972E] text-white px-8 py-2.5">
                   Save Changes

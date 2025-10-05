@@ -41,7 +41,7 @@ export default function FoodCard({
         <h3 className="font-semibold text-lg">{name}</h3>
         <p className="text-sm text-gray-600 line-clamp-2">{description}</p>
         <div className="flex items-center justify-between">
-          <span className="text-xl font-bold text-[#6A972E]">P{price}</span>
+          <span className="text-xl font-bold text-[#6A972E]">{`₱${parseFloat(price.replace(/[^0-9.]/g, '')).toFixed(2)}`}</span>
           <span className="text-sm text-gray-500">Stock: {amountOfStock}</span>
         </div>
       </CardContent>
