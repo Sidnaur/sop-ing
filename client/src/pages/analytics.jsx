@@ -99,10 +99,18 @@ function Analytics() {
       averageOrderValue: 15.0,
       peakHours: "12-1 PM",
       revenueTrend: [
-        { day: "Q1", value: 40000 },
-        { day: "Q2", value: 45000 },
-        { day: "Q3", value: 48000 },
-        { day: "Q4", value: 47000 },
+        { day: "Jan", value: 2000 },
+        { day: "Feb", value: 2500 },
+        { day: "Mar", value: 3000 },
+        { day: "Apr", value: 2800 },
+        { day: "May", value: 3200 },
+        { day: "Jun", value: 3500 },
+        { day: "Jul", value: 4000 },
+        { day: "Aug", value: 4200 },
+        { day: "Sep", value: 3800 },
+        { day: "Oct", value: 4100 },
+        { day: "Nov", value: 3900 },
+        { day: "Dec", value: 4500 },
       ],
       topSellingItems: [
         { name: "Chicken Adobo", quantity: 8000 },
@@ -133,7 +141,7 @@ function Analytics() {
     setTooltip((prev) => ({ ...prev, show: false }));
   };
 
-  // --- SMALL HELPER FOR CARDS ---
+  // --- CARD RENDER HELPER ---
   const renderAnalyticsCard = (title, mainValue, subText, icon, changeValue = null) => (
     <div className="bg-gray-100 p-6 rounded-lg shadow-sm flex flex-col justify-between h-[120px] transition-transform hover:scale-[1.02] duration-200">
       <div className="text-gray-600 text-sm">{title}</div>
@@ -141,9 +149,7 @@ function Analytics() {
         <div>
           <p className="text-2xl font-bold">{mainValue}</p>
           {changeValue !== null && (
-            <p className="text-xs text-gray-500">
-              {changeValue}% {subText}
-            </p>
+            <p className="text-xs text-gray-500">{changeValue}% {subText}</p>
           )}
           {changeValue === null && subText && (
             <p className="text-xs text-gray-500">{subText}</p>
@@ -229,7 +235,7 @@ function Analytics() {
           )}
         </div>
 
-        {/* REVENUE TREND */}
+        {/* Revenue Trend */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div
             className="bg-white p-6 rounded-lg shadow relative"
@@ -285,7 +291,7 @@ function Analytics() {
             )}
           </div>
 
-          {/* TOP SELLING ITEMS */}
+          {/* Top Selling Items */}
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-xl font-bold mb-4">Top Selling Items</h3>
             {currentData.topSellingItems.map((item, index) => (
@@ -316,16 +322,14 @@ function Analytics() {
           </div>
         </div>
 
-        {/* PERFORMANCE CARDS */}
+        {/* Performance Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-xl font-bold mb-2">Best Performance</h3>
             <p className="text-2xl font-semibold">
               {currentData.bestPerformance.orders} orders
             </p>
-            <p className="text-sm text-gray-500 mt-1">
-              Based on this period
-            </p>
+            <p className="text-sm text-gray-500 mt-1">Based on this period</p>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-xl font-bold mb-2">Highest Revenue</h3>
@@ -356,8 +360,7 @@ function Analytics() {
               Revenue Details
             </h3>
             <p className="text-gray-700 mb-2">
-              <strong>Period:</strong>{" "}
-              {currentData.revenueTrend[selectedBar].day}
+              <strong>Period:</strong> {currentData.revenueTrend[selectedBar].day}
             </p>
             <p className="text-gray-700 mb-2">
               <strong>Revenue:</strong> ₱
