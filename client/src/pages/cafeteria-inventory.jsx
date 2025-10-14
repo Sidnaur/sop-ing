@@ -26,9 +26,18 @@ function CafeteriaInventory() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
-  const [filter, setFilter] = useState("All Items");
-  // ADDED: New state for category filter
+  const [availabilityFilter, setAvailabilityFilter] = useState("All Items");
   const [categoryFilter, setCategoryFilter] = useState("All Categories");
+
+  const categories = [
+    "All Categories",
+    "Snacks",
+    "Budget Snacks",
+    "Value Meals",
+    "Packed Meals",
+    "Buffet",
+    "Short Order",
+  ];
 
   const [inventoryItems, setInventoryItems] = useState([
     {
@@ -100,17 +109,6 @@ function CafeteriaInventory() {
     },
   ]);
 
-  // NEW: List of categories for the dropdown
-  const categories = [
-    "All Categories",
-    "Snacks",
-    "Budget Snacks",
-    "Value Meals",
-    "Packed Meals",
-    "Buffet",
-    "Short Order",
-  ];
-
   const handleDeleteItem = (itemId) => {
     setInventoryItems((currentItems) =>
       currentItems.filter((item) => item.id !== itemId)
@@ -123,16 +121,15 @@ function CafeteriaInventory() {
     setSearchQuery(event.target.value);
   };
 
-  // UPDATED: Now filters by both availability and category
   const filteredItems = inventoryItems.filter((item) => {
     const matchesSearch =
       item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.description.toLowerCase().includes(searchQuery.toLowerCase());
 
     let matchesAvailabilityFilter = true;
-    if (filter === "Available") matchesAvailabilityFilter = item.availability && item.amountOfStock > 0;
-    if (filter === "Low Stock") matchesAvailabilityFilter = item.amountOfStock > 0 && item.amountOfStock < 5;
-    if (filter === "Sold Out") matchesAvailabilityFilter = item.amountOfStock === 0;
+    if (availabilityFilter === "Available") matchesAvailabilityFilter = item.availability && item.amountOfStock > 0;
+    if (availabilityFilter === "Low Stock") matchesAvailabilityFilter = item.amountOfStock > 0 && item.amountOfStock < 5;
+    if (availabilityFilter === "Sold Out") matchesAvailabilityFilter = item.amountOfStock === 0;
 
     const matchesCategoryFilter =
       categoryFilter === "All Categories" || item.category === categoryFilter;
@@ -157,7 +154,7 @@ function CafeteriaInventory() {
       icon: <CircleAlert size={24} color="#FACC15" />,
     },
     {
-    name: "Sold Out",
+      name: "Sold Out",
       numberOfItems: filteredItems.filter((i) => i.amountOfStock === 0).length,
       icon: <CircleX size={24} color="#EF4444" />,
     },
@@ -209,27 +206,26 @@ function CafeteriaInventory() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-48 flex justify-between items-center">
-                  <span>Availability: {filter}</span>
+                  <span>Availability: {availabilityFilter}</span>
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-48">
-                <DropdownMenuItem onClick={() => setFilter("All Items")}>
+                <DropdownMenuItem onClick={() => setAvailabilityFilter("All Items")}>
                   All Items
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilter("Available")}>
+                <DropdownMenuItem onClick={() => setAvailabilityFilter("Available")}>
                   Available
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilter("Low Stock")}>
+                <DropdownMenuItem onClick={() => setAvailabilityFilter("Low Stock")}>
                   Low Stock
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setFilter("Sold Out")}>
+                <DropdownMenuItem onClick={() => setAvailabilityFilter("Sold Out")}>
                   Sold Out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
-            {/* NEW: Second dropdown for categories */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" className="w-48 flex justify-between items-center">
@@ -239,12 +235,14 @@ function CafeteriaInventory() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-48">
                 {categories.map((cat) => (
-                  <DropdownMenuItem
-                    key={cat}
-                    onClick={() => setCategoryFilter(cat)}
-                  >
-                    {cat}
-                  </DropdownMenuItem>
+                  cat !== "All Categories" && (
+                    <DropdownMenuItem
+                      key={cat}
+                      onClick={() => setCategoryFilter(cat)}
+                    >
+                      {cat}
+                    </DropdownMenuItem>
+                  )
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -303,6 +301,7 @@ function CafeteriaInventory() {
             }}
             onDelete={handleDeleteItem}
             item={editingItem}
+            categories={categories}
           />
 
           <AddItemModal
@@ -315,6 +314,7 @@ function CafeteriaInventory() {
               ]);
               setIsAddModalOpen(false);
             }}
+            categories={categories}
           />
         </div>
       </>

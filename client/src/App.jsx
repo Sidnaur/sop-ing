@@ -12,6 +12,7 @@ import { ProtectedRoute } from "./lib/protected-route";
 import CafeteriaInventory from "./pages/cafeteria-inventory";
 import CustomerFeedback from "./pages/customer-feedback";
 import SettingsPage from "./pages/settings";
+import Analytics from "./pages/analytics";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <ProtectedRoute path="/inventory" component={CafeteriaInventory} />
       <ProtectedRoute path="/feedback" component={CustomerFeedback} /> 
       <ProtectedRoute path="/settings" component={SettingsPage} />
+      <ProtectedRoute path="/analytics" component={Analytics} />
       <Route component={NotFound} />
     </Switch>
   );

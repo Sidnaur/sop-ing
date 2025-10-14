@@ -45,13 +45,11 @@ function HourInputRow({ day, times, handleHourChange }) {
   else if (duration !== "Set Times") badgeClass = "bg-[#E6F4D2] text-[#6A972E] font-bold";
 
   return (
-    // Adjusted grid layout for better alignment
     <div className="grid grid-cols-[1fr,1.5fr,1.5fr,1fr] items-center gap-4 py-3 border-b last:border-b-0 px-4 sm:px-6">
-      {/* Day + Closed Switch */}
       <div className="flex items-center gap-2">
         <span className="font-semibold text-gray-800">{day}</span>
         <Switch
-          checked={!isClosed} // Note the logical inversion for the visual state
+          checked={!isClosed}
           onCheckedChange={(checked) =>
             handleHourChange(day, "status", checked ? "Open" : "Closed")
           }
@@ -59,7 +57,6 @@ function HourInputRow({ day, times, handleHourChange }) {
         />
       </div>
 
-      {/* Open Time */}
       <Input
         type="time"
         value={times.open}
@@ -68,7 +65,6 @@ function HourInputRow({ day, times, handleHourChange }) {
         disabled={isClosed}
       />
 
-      {/* Close Time */}
       <Input
         type="time"
         value={times.close}
@@ -77,7 +73,6 @@ function HourInputRow({ day, times, handleHourChange }) {
         disabled={isClosed}
       />
 
-      {/* Duration */}
       <div className={`px-3 py-1 text-sm text-center rounded-full ${badgeClass}`}>
         {duration}
       </div>
@@ -85,7 +80,7 @@ function HourInputRow({ day, times, handleHourChange }) {
   );
 }
 
-// ... (The rest of your SettingsPage component remains the same)
+// --- Settings Page ---
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("hours");
 
@@ -102,7 +97,7 @@ export default function SettingsPage() {
   const [staff, setStaff] = useState([
     { id: 1, name: "Anna Ciriaco", role: "Cashier", email: "anna.c@gmail.com", status: "Active" },
     { id: 2, name: "Jennifer Carlos", role: "Cook", email: "jennifer.c@gmail.com", status: "Active" },
-    { id: 3, name: "Joshua Smith", role: "Deliverer", email: "joshua.s@gmail.com", status: "Active" },
+    { id: 3, name: "Joshua Smith", role: "Deliverer", email: "joshua.s@gmail.com", status: "Inactive" },
   ]);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newStaff, setNewStaff] = useState({ name: "", role: "", email: "", status: "Active" });
@@ -130,6 +125,15 @@ export default function SettingsPage() {
 
   const handleRemoveStaff = (id) => {
     setStaff((prev) => prev.filter((s) => s.id !== id));
+  };
+
+  // ✅ Toggle staff status directly in the table
+  const toggleStatus = (id) => {
+    setStaff((prev) =>
+      prev.map((s) =>
+        s.id === id ? { ...s, status: s.status === "Active" ? "Inactive" : "Active" } : s
+      )
+    );
   };
 
   const handleSaveChanges = () => {
@@ -207,14 +211,21 @@ export default function SettingsPage() {
                       </thead>
                       <tbody className="divide-y divide-gray-200">
                         {staff.map((s) => (
-                          <tr key={s.id}>
+                          <tr key={s.id} className="hover:bg-gray-50 transition">
                             <td className="px-6 py-4">{s.name}</td>
                             <td className="px-6 py-4">{s.role}</td>
                             <td className="px-6 py-4">{s.email}</td>
                             <td className="px-6 py-4">
-                              <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                              <button
+                                onClick={() => toggleStatus(s.id)}
+                                className={`px-2 py-0.5 text-xs font-semibold rounded-full cursor-pointer transition ${
+                                  s.status === "Active"
+                                    ? "bg-green-100 text-green-800 hover:bg-green-200"
+                                    : "bg-red-100 text-red-800 hover:bg-red-200"
+                                }`}
+                              >
                                 {s.status}
-                              </span>
+                              </button>
                             </td>
                             <td className="px-6 py-4">
                               <Button
@@ -233,7 +244,7 @@ export default function SettingsPage() {
                   </div>
 
                   {isAddModalOpen && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
                         <h3 className="text-lg font-semibold mb-4">Add New Staff</h3>
                         <div className="space-y-3">
